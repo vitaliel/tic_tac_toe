@@ -64,11 +64,8 @@ export const userSlice = createSlice({
         state.error = 'Error: unknown error'
       })
       .addCase(checkTokenAsync.pending, (state) => {
-        // state.status = 'loading';
       })
       .addCase(checkTokenAsync.fulfilled, (state, action) => {
-        state.status = 'idle';
-        console.log('checkTokenAsync after', action.payload);
         const {status} = action.payload;
 
         if (status === 'success') {
@@ -80,7 +77,6 @@ export const userSlice = createSlice({
         }
       })
       .addCase(checkTokenAsync.rejected, (state, action) => {
-        state.status = 'idle';
         state.error = 'Error: unknown error'
       });
   },

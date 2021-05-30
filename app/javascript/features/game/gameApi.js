@@ -20,3 +20,43 @@ export function listApi() {
     }
   );
 }
+
+export function showApi(id) {
+  return new Promise((resolve, reject) => {
+      const token = localStorage.getItem(STORAGE_TOKEN);
+
+      axios.get(`/games/${id}.json`, {
+        headers: {
+          'X-Token': token
+        }
+      })
+        .then((res) => {
+          resolve(res)
+        })
+        .catch((error) => {
+          console.error(error);
+          reject(error)
+        })
+    }
+  );
+}
+
+export function newGameApi() {
+  return new Promise((resolve, reject) => {
+      const token = localStorage.getItem(STORAGE_TOKEN);
+
+      axios.post('/games.json', {}, {
+        headers: {
+          'X-Token': token
+        }
+      })
+        .then((res) => {
+          resolve(res)
+        })
+        .catch((error) => {
+          console.error(error);
+          reject(error)
+        })
+    }
+  );
+}
