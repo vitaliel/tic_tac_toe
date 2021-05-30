@@ -2,6 +2,7 @@ require 'rails_helper'
 
 RSpec.describe UsersController do
   let(:user) { create(:user) }
+  let(:api_key) { ApiKey.for_user(user) }
 
   context 'when user wants to login' do
     before do
@@ -29,8 +30,7 @@ RSpec.describe UsersController do
   context 'when checking access token' do
     context 'when valid token' do
       before do
-        @api_key = ApiKey.for_user(user)
-        request.headers['X-Token'] = @api_key.token
+        request.headers['X-Token'] = api_key.token
       end
 
       it 'succeeds' do

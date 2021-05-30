@@ -2,6 +2,8 @@ class ApplicationController < ActionController::Base
   before_action :load_user_from_token
   protected
 
+  attr_reader :current_user
+
   def load_user_from_token
     token = request.headers['X-Token']
 
@@ -16,6 +18,8 @@ class ApplicationController < ActionController::Base
       jsend_error 'Access denied: need to login'
       return false
     end
+
+    @current_user = @api_key.user
   end
 
   def jsend_success(data)

@@ -8,6 +8,13 @@ Rails.application.routes.draw do
     end
   end
 
+  resources :games, only: [:create, :show] do
+    member do
+      put :join
+      put :make_move
+    end
+  end
+
   root to: 'pages#index'
 
   # Pass any path to react
