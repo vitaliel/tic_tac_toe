@@ -34,6 +34,7 @@ gem 'pundit'
 gem 'kaminari'
 # JSON serializers
 gem 'grape-entity'
+gem 'dry-transaction'
 
 group :development, :test do
   gem 'rspec-rails'
