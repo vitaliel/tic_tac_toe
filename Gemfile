@@ -28,8 +28,12 @@ gem 'bcrypt', '~> 3.1.7'
 # Reduces boot times through caching; required in config/boot.rb
 gem 'bootsnap', '>= 1.4.4', require: false
 
+gem 'rexml'
+
 gem 'pundit'
 gem 'kaminari'
+# JSON serializers
+gem 'grape-entity'
 
 group :development, :test do
   gem 'rspec-rails'

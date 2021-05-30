@@ -7,6 +7,7 @@ class ApplicationController < ActionController::Base
 
     if token.present?
       @api_key = ApiKey.where(token: token).first
+      logger.info('User token is valid') if @api_key
     end
   end
 
