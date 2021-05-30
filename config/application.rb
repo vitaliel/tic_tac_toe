@@ -18,5 +18,17 @@ module TicTacToe
     #
     # config.time_zone = "Central Time (US & Canada)"
     # config.eager_load_paths << Rails.root.join("extras")
+    # Don't generate system test files.
+
+    config.generators do |g|
+      g.fixture_replacement :factory_bot, dir: 'spec/factories'
+      g.helper false
+      g.javascripts false
+      g.skip_routes  true
+      g.stylesheets false
+      g.template_engine false
+      g.test_framework :rspec
+      g.view_specs false
+    end
   end
 end
