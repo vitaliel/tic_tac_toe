@@ -7,4 +7,5 @@
 #   Character.create(name: 'Luke', movie: movies.first)
 
 users = User.create([{ login: 'alice', password: '123' }, { login: 'bob', password: '123' }])
-Game.create owner: users.first
+
+Games::CreatorService.new(users.first).call

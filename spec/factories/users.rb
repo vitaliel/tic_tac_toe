@@ -1,6 +1,6 @@
 FactoryBot.define do
   sequence :login do |n|
-    "alice-#{n}"
+    "login-#{n}"
   end
 
   factory :user do

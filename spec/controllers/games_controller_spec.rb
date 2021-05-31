@@ -41,12 +41,13 @@ RSpec.describe GamesController do
 
     it 'creates' do
       expect do
-        post :create, params: { }, format: :json
+        post :create, params: {}, format: :json
         expect(response).to have_http_status(:ok)
       end.to change(Game, :count)
-
+      game = Game.last
+      expect(game.steps.count).to eq 9
       json = JSON.parse(response.body)
-      expect(json['data']['id']).to eq Game.last.id
+      expect(json['data']['id']).to eq game.id
     end
   end
 
@@ -66,6 +67,35 @@ RSpec.describe GamesController do
       expect(json['data']['player']['id']).to eq user.id
       game.reload
       expect(game.status).to eq 'playing'
+    end
+  end
+
+  describe "#make_move" do
+    let(:bob) { create(:user) }
+    let(:game) { Games::CreatorService.new(bob).call }
+
+    before do
+      request.headers['X-Token'] = api_key.token
+      game.next_player = user
+      game.status = :playing
+      game.save!
+    end
+
+    it 'makes move' do
+      put :make_move, params: {id: game.id, step: {position: 1}}
+      expect(response).to have_http_status(:ok)
+      json = JSON.parse(response.body)
+      expect(json['status']).to eq 'success'
+      expect(json['data']['id']).to eq game.id
+      expect(json['data']['steps'].first['symbol']).to eq 'X'
+    end
+
+    it 'returns error' do
+      put :make_move, params: { id: game.id, step: { position: 100 } }
+      expect(response).to have_http_status(:ok)
+      json = JSON.parse(response.body)
+      expect(json['status']).to eq 'error'
+      expect(json['message']).to eq 'Position should be in interval 1..9'
     end
   end
 end
