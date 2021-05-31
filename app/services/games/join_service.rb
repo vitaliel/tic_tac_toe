@@ -40,6 +40,13 @@ module Games
       game.status = :playing
 
       if game.save
+        ActionCable.server.broadcast(
+          "game_#{game.id}",
+          {
+            player: { id: user.id, login: user.login },
+            action: 'join',
+          }
+        )
         Success(game)
       else
         Failure('Cannot save game')
