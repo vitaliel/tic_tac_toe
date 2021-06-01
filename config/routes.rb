@@ -8,7 +8,7 @@ Rails.application.routes.draw do
     end
   end
 
-  resources :games, only: [:create, :show] do
+  resources :games, only: [:create, :show, :index] do
     member do
       put :join
       put :make_move

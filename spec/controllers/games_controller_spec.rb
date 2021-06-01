@@ -51,6 +51,28 @@ RSpec.describe GamesController do
     end
   end
 
+  describe '#index' do
+    let(:games) { create_list(:game, 2, owner: user) }
+    let(:bob) { create(:user) }
+    let(:private_game) { create(:game, player: bob) }
+
+    before do
+      games
+      private_game
+      request.headers['X-Token'] = api_key.token
+    end
+
+    it 'returns games in reverse order' do
+      get :index
+      expect(response).to have_http_status(:ok)
+
+      json = JSON.parse(response.body)
+      expect(json['status']).to eq 'success'
+      expect(json['data'].size).to eq 2
+      expect(json['data'].first['id']).to eq games.last.id
+    end
+  end
+
   describe '#join' do
     let(:bob) { create(:user) }
     let(:game) { create(:game, owner: bob) }

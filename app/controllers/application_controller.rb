@@ -1,5 +1,9 @@
 class ApplicationController < ActionController::Base
+  include Pundit
+  rescue_from Pundit::NotAuthorizedError, with: :user_not_authorized
+
   before_action :load_user_from_token
+
   protected
 
   attr_reader :current_user
@@ -28,5 +32,14 @@ class ApplicationController < ActionController::Base
 
   def jsend_error(msg)
     render json: { status: 'error', message: msg }
+  end
+
+  def user_not_authorized(exception)
+    policy_name = exception.policy.class.to_s.underscore
+    msg = t "#{policy_name}.#{exception.query}", scope: :pundit, default: :default
+
+    logger.error("403 - #{msg} #{policy_name} #{exception.query}")
+
+    jsend_error(msg)
   end
 end

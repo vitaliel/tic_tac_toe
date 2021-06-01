@@ -2,13 +2,18 @@ class GamesController < ApplicationController
   before_action :authenticated
 
   def show
-    @game = Game.find(params[:id])
-    jsend_success GameEntity.new(@game).as_json
+    @game = authorize Game.find(params[:id])
+    jsend_success GameEntity.represent(@game)
+  end
+
+  def index
+    games = policy_scope(Game).order(id: :desc)
+    jsend_success GameEntity.represent(games)
   end
 
   def create
     game = Games::CreatorService.new(current_user).call
-    jsend_success GameEntity.new(game).as_json
+    jsend_success GameEntity.represent(game)
   end
 
   def join
@@ -17,7 +22,7 @@ class GamesController < ApplicationController
       result = Games::JoinService.new.call(game: @game, user: current_user)
 
       if result.success?
-        jsend_success GameEntity.new(result.value!).as_json
+        jsend_success GameEntity.represent(result.value!)
       else
         jsend_error result.failure
       end
@@ -30,7 +35,7 @@ class GamesController < ApplicationController
       result = Games::PlayService.new.call(game: @game, user: current_user, step: step_params)
 
       if result.success?
-        jsend_success GameEntity.new(result.value!).as_json
+        jsend_success GameEntity.represent(result.value!)
       else
         jsend_error result.failure
       end
