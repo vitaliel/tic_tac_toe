@@ -60,3 +60,43 @@ export function newGameApi() {
     }
   );
 }
+
+export function joinGameApi(id) {
+  return new Promise((resolve, reject) => {
+      const token = localStorage.getItem(STORAGE_TOKEN);
+
+      axios.put(`/games/${id}/join.json`, {}, {
+        headers: {
+          'X-Token': token
+        }
+      })
+        .then((res) => {
+          resolve(res)
+        })
+        .catch((error) => {
+          console.error(error);
+          reject(error)
+        })
+    }
+  );
+}
+
+export function makeMoveGameApi({id, position}) {
+  return new Promise((resolve, reject) => {
+      const token = localStorage.getItem(STORAGE_TOKEN);
+
+      axios.put(`/games/${id}/make_move.json`, {step: {position}}, {
+        headers: {
+          'X-Token': token
+        }
+      })
+        .then((res) => {
+          resolve(res)
+        })
+        .catch((error) => {
+          console.error(error);
+          reject(error)
+        })
+    }
+  );
+}

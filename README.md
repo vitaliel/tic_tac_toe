@@ -1,6 +1,8 @@
 # README
 
 TODO
+* UI: Real-time game
+* UI: when game is finished with a winner display cross-line over symbols
 * create tests for play_service
 
 This README would normally document whatever steps are necessary to get the

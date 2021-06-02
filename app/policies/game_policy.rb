@@ -5,7 +5,7 @@ class GamePolicy < ApplicationPolicy
 
   class Scope < Scope
     def resolve
-      scope.where('owner_id = :user_id and (player_id is null or player_id= :user_id)', user_id: user.id)
+      scope.where('owner_id = :user_id OR player_id is null OR player_id = :user_id', user_id: user.id)
     end
   end
 end

@@ -3,13 +3,12 @@ import {useSelector, useDispatch} from 'react-redux';
 import {LinkContainer} from "react-router-bootstrap";
 import Button from "react-bootstrap/Button";
 import {gameList, gameListAsync, newGameAsync} from "../../features/game/gameSlice";
-import {currentUser, isLoggedIn} from "../../features/user/userSlice";
+import {isLoggedIn} from "../../features/user/userSlice";
 import {Redirect} from "react-router-dom";
 
 export default () => {
   const games = useSelector(gameList);
   const loggedIn = useSelector(isLoggedIn);
-  const user = useSelector(currentUser);
   const dispatch = useDispatch();
 
   if (!loggedIn) {

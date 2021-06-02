@@ -110,6 +110,14 @@ module Games
         game.save!
       end
 
+      ActionCable.server.broadcast(
+        "game_#{game.id}",
+        {
+          game: GameEntity.represent(game),
+          action: 'makeMove',
+        }
+      )
+
       Success(game)
     end
   end

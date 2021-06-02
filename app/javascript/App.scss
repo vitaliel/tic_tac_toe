@@ -20,6 +20,15 @@
     .item {
         text-align: center;
         padding-top: 10px;
+        display: flex;
+        align-items: stretch;
+
+        .empty {
+            background-color: lightgray;
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+        }
     }
 }
 

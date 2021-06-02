@@ -1,9 +1,9 @@
 import {createAsyncThunk, createSlice} from "@reduxjs/toolkit";
 
-import {listApi, newGameApi, showApi} from "./gameApi";
+import {joinGameApi, listApi, makeMoveGameApi, newGameApi, showApi} from "./gameApi";
 
 const initialState = {
-  current: {id: 0, loaded: false, loading: false}, // Current game
+  current: {id: 0, loaded: false, loading: false, object: null}, // Current game
   status: 'idle',
   list: {
     loaded: false,
@@ -22,6 +22,15 @@ export const newGameAsync = createAsyncThunk(
   }
 );
 
+export const joinGameAsync = createAsyncThunk(
+  'game/joinGame',
+  async (gameId) => {
+    const res = await joinGameApi(gameId);
+    // The value we return becomes the `fulfilled` action payload
+    return res.data;
+  }
+);
+
 export const gameListAsync = createAsyncThunk(
   'game/list',
   async () => {
@@ -32,8 +41,16 @@ export const gameListAsync = createAsyncThunk(
 
 export const gameShowAsync = createAsyncThunk(
   'game/show',
-  async () => {
-    const res = await showApi();
+  async (gameId) => {
+    const res = await showApi(gameId);
+    return res.data;
+  }
+);
+
+export const makeMoveGameAsync = createAsyncThunk(
+  'game/makeMove',
+  async ({id, position}) => {
+    const res = await makeMoveGameApi({id, position});
     return res.data;
   }
 );
@@ -71,17 +88,57 @@ export const gameSlice = createSlice({
         }
       })
       .addCase(gameShowAsync.pending, (state) => {
-        // TODO
+        state.current.loading = true;
+        state.current.error = '';
+      })
+      .addCase(gameShowAsync.fulfilled, (state, action) => {
+        state.current.loaded = true;
+        state.current.loading = false;
+        const {status} = action.payload;
+
+        if (status === 'success') {
+          state.current.object = action.payload.data;
+          state.current.id = action.payload.data.id;
+        } else {
+          state.current.error = action.payload.message;
+        }
+      })
+      .addCase(joinGameAsync.pending, (state) => {
+        state.current.loading = true;
+        state.current.error = '';
+      })
+      .addCase(joinGameAsync.fulfilled, (state, action) => {
+        state.current.loaded = true;
+        state.current.loading = false;
+        const {status} = action.payload;
+
+        if (status === 'success') {
+          state.current.object = action.payload.data;
+          state.current.id = action.payload.data.id;
+        } else {
+          state.current.error = action.payload.message;
+        }
+      })
+      .addCase(makeMoveGameAsync.pending, (state) => {
+        state.current.loading = true;
+        state.current.error = '';
+      })
+      .addCase(makeMoveGameAsync.fulfilled, (state, action) => {
+        state.current.loaded = true;
+        state.current.loading = false;
+        const {status} = action.payload;
+
+        if (status === 'success') {
+          state.current.object = action.payload.data;
+          state.current.id = action.payload.data.id;
+        } else {
+          state.current.error = action.payload.message;
+        }
       })
   },
 })
 
-export const isCurrentLoaded = (state) => state.game.current.id > 0;
 export const currentGame = (state) => state.game.current;
-
-export const isListLoaded = (state) => state.game.list.loaded;
-export const isListLoading = (state) => state.game.list.loading;
-
 export const gameList = (state) => state.game.list;
 
 export default gameSlice.reducer;

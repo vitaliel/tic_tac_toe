@@ -1,30 +1,34 @@
 import React from 'react';
-import {LinkContainer} from "react-router-bootstrap";
-
-const STEPS = [
-  {id: 1,},
-  {id: 2,},
-  {id: 3,},
-  {id: 4,},
-  {id: 5,},
-  {id: 6,},
-  {id: 7,},
-  {id: 8,},
-  {id: 9,},
-];
-
-function gridItem() {
-
-}
+import {useDispatch, useSelector} from "react-redux";
+import {currentUser} from "../features/user/userSlice";
+import {currentGame, makeMoveGameAsync} from "../features/game/gameSlice";
 
 export default () => {
-  const list = STEPS.map(step => {
+  const dispatch = useDispatch();
+  const user = useSelector(currentUser);
+  const gameEntity = useSelector(currentGame);
+  const game = gameEntity.object;
+  const mySymbol = game.owner.id === user.id ? 'O' : 'X';
+  const isMyMove = user.id === game.next_player.id && game.status === 'playing';
+
+  function makeMove(step) {
+    const id = game.id;
+    const {position} = step;
+    dispatch(makeMoveGameAsync({id, position}));
+  }
+
+  const list = game.steps.map(step => {
     return (
       <div className='item' key={step.id}>
-        <button>X</button>
+        {isMyMove && step.symbol === '.' && <button onClick={() => makeMove(step)}>{mySymbol}</button>}
+        {isMyMove && step.symbol !== '.' && <span>{step.symbol}</span>}
+
+        {!isMyMove && step.symbol === '.' && <span className='empty'/>}
+        {!isMyMove && step.symbol !== '.' && <span>{step.symbol}</span>}
       </div>
     )
   });
+
   return (
     <div className='row'>
       <div className="col-4">
