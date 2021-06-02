@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe UsersController do
+RSpec.describe Api::UsersController do
   let(:user) { create(:user) }
   let(:api_key) { ApiKey.for_user(user) }
 

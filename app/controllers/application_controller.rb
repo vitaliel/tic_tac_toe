@@ -36,7 +36,7 @@ class ApplicationController < ActionController::Base
 
   def user_not_authorized(exception)
     policy_name = exception.policy.class.to_s.underscore
-    msg = t "#{policy_name}.#{exception.query}", scope: :pundit, default: :default
+    msg = "You cannot perform this action: #{policy_name}.#{exception.query}"
 
     logger.error("403 - #{msg} #{policy_name} #{exception.query}")
 

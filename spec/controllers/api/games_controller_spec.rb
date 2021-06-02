@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe GamesController do
+RSpec.describe Api::GamesController do
   let(:user) { create(:user) }
   let(:game) { create(:game, owner: user) }
   let(:api_key) { ApiKey.for_user(user) }
