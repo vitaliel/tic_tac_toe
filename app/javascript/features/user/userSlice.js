@@ -83,6 +83,7 @@ export const userSlice = createSlice({
 })
 
 export const isLoggedIn = (state) => state.user.id > 0;
+export const currentUser = (state) => state.user;
 export const userLogin = (state) => state.user.login;
 export const loginError = (state) => state.user.error;
 

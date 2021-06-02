@@ -2,23 +2,36 @@ import React from 'react';
 import {useSelector, useDispatch} from 'react-redux';
 import {LinkContainer} from "react-router-bootstrap";
 import Button from "react-bootstrap/Button";
-
-const GAMES = [
-  {id: 1, owner_login: 'alice'},
-  {id: 2, owner_login: 'bob'},
-  {id: 3, owner_login: 'alice'},
-]
+import {gameList, gameListAsync, newGameAsync} from "../../features/game/gameSlice";
+import {currentUser, isLoggedIn} from "../../features/user/userSlice";
+import {Redirect} from "react-router-dom";
 
 export default () => {
+  const games = useSelector(gameList);
+  const loggedIn = useSelector(isLoggedIn);
+  const user = useSelector(currentUser);
+  const dispatch = useDispatch();
 
-  const list = GAMES.map(game => {
+  if (!loggedIn) {
+    return <Redirect to='/login'/>
+  }
+
+  if (!games.loaded && !games.loading) {
+    dispatch(gameListAsync())
+    return <div>Loading...</div>
+  }
+
+  if (games.loading) {
+    return <div>Loading...</div>
+  }
+
+  const list = games.items.map(game => {
     return (
       <li key={game.id}>
         <LinkContainer to={`/games/${game.id}`}>
-          <div>
-            <a href='#'>#{game.id} {game.owner_login}</a>
-          </div>
+          <a href={`/games/${game.id}`}>#{game.id} Creator: {game.owner.login}</a>
         </LinkContainer>
+        {' '}status: {game.status}
       </li>
     )
   });
@@ -26,7 +39,9 @@ export default () => {
   return (<>
       <h2>Games</h2>
       <div>
-        <Button onClick={() => {}}>New Game</Button>
+        <Button onClick={() => {
+          dispatch(newGameAsync())
+        }}>New Game</Button>
       </div>
       <div className='game-list'>
         <ul>
